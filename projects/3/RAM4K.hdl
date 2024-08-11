@@ -1,0 +1,43 @@
+/**
+ * Memory of 4K 16-bit registers.
+ * If load is asserted, the value of the register selected by
+ * address is set to in; Otherwise, the value does not change.
+ * The value of the selected register is emitted by out.
+ */
+CHIP RAM4K {
+    IN in[16], load, address[12];
+    OUT out[16];
+
+    PARTS:
+    DMux8Way(in=load, sel=address[9..11], 
+        a=is_ram512_a, 
+        b=is_ram512_b, 
+        c=is_ram512_c, 
+        d=is_ram512_d, 
+        e=is_ram512_e, 
+        f=is_ram512_f, 
+        g=is_ram512_g, 
+        h=is_ram512_h
+    );
+
+    RAM512(in=in, load=is_ram512_a, address=address[0..8], out=ram512_a_out);
+    RAM512(in=in, load=is_ram512_b, address=address[0..8], out=ram512_b_out);
+    RAM512(in=in, load=is_ram512_c, address=address[0..8], out=ram512_c_out);
+    RAM512(in=in, load=is_ram512_d, address=address[0..8], out=ram512_d_out);
+    RAM512(in=in, load=is_ram512_e, address=address[0..8], out=ram512_e_out);
+    RAM512(in=in, load=is_ram512_f, address=address[0..8], out=ram512_f_out);
+    RAM512(in=in, load=is_ram512_g, address=address[0..8], out=ram512_g_out);
+    RAM512(in=in, load=is_ram512_h, address=address[0..8], out=ram512_h_out);
+
+    Mux8Way16(
+        a=ram512_a_out,
+        b=ram512_b_out,
+        c=ram512_c_out,
+        d=ram512_d_out,
+        e=ram512_e_out,
+        f=ram512_f_out,
+        g=ram512_g_out,
+        h=ram512_h_out,
+        sel=address[9..11], out=out 
+    );
+}

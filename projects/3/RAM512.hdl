@@ -1,0 +1,43 @@
+/**
+ * Memory of sixty four 16-bit registers.
+ * If load is asserted, the value of the register selected by
+ * address is set to in; Otherwise, the value does not change.
+ * The value of the selected register is emitted by out.
+ */
+CHIP RAM512 {
+    IN in[16], load, address[9];
+    OUT out[16];
+
+    PARTS:
+    DMux8Way(in=load, sel=address[6..8], 
+        a=is_ram64_a, 
+        b=is_ram64_b, 
+        c=is_ram64_c, 
+        d=is_ram64_d, 
+        e=is_ram64_e, 
+        f=is_ram64_f, 
+        g=is_ram64_g, 
+        h=is_ram64_h
+    );
+
+    RAM64(in=in, load=is_ram64_a, address=address[0..5], out=ram64_a_out);
+    RAM64(in=in, load=is_ram64_b, address=address[0..5], out=ram64_b_out);
+    RAM64(in=in, load=is_ram64_c, address=address[0..5], out=ram64_c_out);
+    RAM64(in=in, load=is_ram64_d, address=address[0..5], out=ram64_d_out);
+    RAM64(in=in, load=is_ram64_e, address=address[0..5], out=ram64_e_out);
+    RAM64(in=in, load=is_ram64_f, address=address[0..5], out=ram64_f_out);
+    RAM64(in=in, load=is_ram64_g, address=address[0..5], out=ram64_g_out);
+    RAM64(in=in, load=is_ram64_h, address=address[0..5], out=ram64_h_out);
+
+    Mux8Way16(
+        a=ram64_a_out,
+        b=ram64_b_out,
+        c=ram64_c_out,
+        d=ram64_d_out,
+        e=ram64_e_out,
+        f=ram64_f_out,
+        g=ram64_g_out,
+        h=ram64_h_out,
+        sel=address[6..8], out=out 
+    );
+}
